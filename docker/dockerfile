@@ -1,0 +1,14 @@
+FROM  pytorch/pytorch:1.8.0-cuda11.1-cudnn8-runtime
+RUN apt update && apt install build-essential ffmpeg libsm6 libxext6 git vim -y
+ADD requirements.txt /tmp/
+ADD install_sc2.sh /tmp/
+RUN python -m pip install --upgrade pip
+RUN pip install -r /tmp/requirements.txt
+
+ARG CACHEBUST=1
+RUN pip install importlib-metadata==4.13.0 --force-reinstall
+RUN apt install wget unzip -y 
+RUN bash /tmp/install_sc2.sh
+ARG SC2PATH=/workspace/3rdparty/StarCraftII
+
+RUN pip install --force-reinstall --no-deps git+https://github.com/AIRI-Institute/pogema.git
